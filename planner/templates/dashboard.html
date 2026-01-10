@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+<h4>Your Subjects</h4>
+<ul>
+  {% for subject in subjects %}
+    <li>{{ subject.name }}</li>
+  {% empty %}
+    <li>No subjects yet</li>
+  {% endfor %}
+</ul>
+
+<h4>Your Study Sessions</h4>
+<ul>
+  {% for session in sessions %}
+    <li>
+      {{ session.subject.name }} -
+      {{ session.date }} -
+      {{ session.planned_duration }} min
+    </li>
+  {% empty %}
+    <li>No sessions planned</li>
+  {% endfor %}
+</ul>
+{% endblock %}

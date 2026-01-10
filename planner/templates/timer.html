@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Focus Timer</h2>
+
+<p>
+  Subject: <strong>{{ session.subject.name }}</strong><br>
+  Planned Duration: {{ session.planned_duration }} minutes
+</p>
+
+<h1 id="timer">00:00</h1>
+
+<button id="start" class="btn btn-success">Start</button>
+<button id="stop" class="btn btn-danger" disabled>Stop</button>
+
+<script src="{% static 'js/timer.js' %}"></script>
+<script>
+  const SESSION_ID = "{{ session.id }}";
+</script>
+{% endblock %}
