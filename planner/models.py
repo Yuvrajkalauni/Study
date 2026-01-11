@@ -21,5 +21,7 @@ class StudySession(models.Model):
     def __str__(self):
         return f"{self.objects.name} = {self.data}"
     
-class FocusLog(models,Model):
-    
+class FocusLog(models.Model):
+    session = models.Foreginkey(StudySession,on_delete=models.CASCADE)
+    start_time = models.DateField()
+    end_time = models.DateField(null=True, blank=False)
