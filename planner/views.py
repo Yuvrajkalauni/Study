@@ -1,3 +1,4 @@
+from collections import defaultdict
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Subject, StudySession
@@ -98,32 +99,19 @@ def stop_focus(request):
         return JsonResponse({"status": "stopped"})
 
 
+
 @login_required
 def analytics(request):
-    logs = FocusLog.objects.filter(
-        session__user=request.user,
-        end_time__isnull=False
-    )
+    sessions = StudySession.objects.filter(user=request.user)
 
-    duration_expr = ExpressionWrapper(
-        F("end_time") - F("start_time"),
-        output_field=DurationField()
-    )
+    data = {}
 
-    logs = logs.annotate(duration=duration_expr)
+    for session in sessions:
+        subject = session.subject.name
+        data[subject] = data.get(subject, 0) + session.duration
 
-    subject_totals = {}
+    analytics_data = data.items()
 
-    for log in logs:
-        subject = log.session.subject.name
-        seconds = log.duration.total_seconds()
-        subject_totals[subject] = subject_totals.get(subject, 0) + seconds
-
-    labels = list(subject_totals.keys())
-    values = [v / 60 for v in subject_totals.values()]  # minutes
-
-    return render(request, "analytics.html", {
-        "labels": labels,
-        "values": values
+    return render(request, "planner/analytics.html", {
+        "analytics_data": analytics_data
     })
-
